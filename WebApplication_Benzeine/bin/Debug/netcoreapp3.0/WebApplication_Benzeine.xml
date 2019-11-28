@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebApplication_Benzeine</name>
+    </assembly>
+    <members>
+        <member name="M:WebApplication_Benzeine.Controller.IdentityController.Register(WebApplication_Benzeine.Models.RequestDTO.RequestModel)">
+            <summary>
+            Receive requestModel and if succeessfully registered returns a JWT Token, if failed returns Error list. 
+            </summary>
+            <param name="request"></param>
+            <response code="200">Success. Registration succeeded. JWT token returned</response>
+            <response code="400">Bad Request. Registration failed. Can be returned in case there is already exist such a user, or requestModel wasn't valid</response>
+        </member>
+        <member name="T:WebApplication_Benzeine.Controller.Exception_Handling.ErrorController">
+            <summary>
+            Simple controller for handling Expcetions and punish them
+            </summary>
+        </member>
+        <member name="M:WebApplication_Benzeine.Controller.ProductController.GetProducts">
+            <summary>
+             Props doesnt work
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApplication_Benzeine.Controller.ProductController.DeleteProduct(System.Int32)">
+            <summary>
+            And Remember! Only User created this product can delete it, othere users will be denie. DEMOCRATIC!
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApplication_Benzeine.Controller.WifiController">
+            <summary>
+            This controller return wifi password to Users that have email with benzeine.com domain
+            </summary>
+        </member>
+        <member name="T:WebApplication_Benzeine.Models.RequestDTO.RequestModel">
+            <summary>
+            REquest Model
+            </summary>
+        </member>
+        <member name="P:WebApplication_Benzeine.Models.RequestDTO.RequestModel.Email">
+            <summary>
+            Email Address should be in correct way.
+            benzeine.com domains can have access  api/wifi URL that return wifi password
+            </summary>
+        </member>
+        <member name="T:WebApplication_Benzeine.Services.AuthenticationService">
+            <summary>
+            Service is responsible for authentication users and generate JWT Tokens
+            </summary>
+        </member>
+        <member name="T:WebApplication_Benzeine.Services.ProductService">
+            <summary>
+            Service that represent CRUD operations over Product and Category entites.
+            I didn't separated services into ProductService and CategoryService, and didn't use RepositoryPattern
+            All implemented together in one service.
+            DTO not used
+            </summary>
+        </member>
+        <member name="M:WebApplication_Benzeine.Services.ProductService.AddProduct(WebApplication_Benzeine.Data.Models.DTO_s.ProductDTO,System.String)">
+            <summary>
+            Add a new Product.
+            No need for validation since it will be validated in Controller
+            </summary>
+            <param name="product"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApplication_Benzeine.Services.ProductService.DeleteProduct(System.Int32,System.String)">
+            <summary>
+            Delete Product
+            </summary>
+            <param name="productId"></param>
+            <returns>Boolean indicating if product were succeffully deleted</returns>
+        </member>
+    </members>
+</doc>

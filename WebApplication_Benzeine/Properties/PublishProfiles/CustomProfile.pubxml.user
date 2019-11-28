@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Этот файл используется процессом публикации или упаковки вашего веб-проекта. Можно настроить поведение этого процесса,
+изменив этот файл MSBuild. Подробности см. на странице https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAMiAQRyLE606uvY8jkIes6gAAAAACAAAAAAAQZgAAAAEAACAAAABS7UtKmEVetKZE34n09VtwbkMRZfnFm7BL9Z0x0xWFNQAAAAAOgAAAAAIAACAAAACj3P10+WsHsXrWV4jZ4m/mOJ7o+NkT4iS2eqzUmtPpsyAAAADRHcyD50sna3tQ2m1tOXKnohwntHfO8XSMmKNjNFVAJkAAAADKJrO4rxqkUdXe0Ji1YJ8RBEk4zy6IGzFEbjKh036/E1BuelQiDLl7qGzNC7cA2Bc4OOA31z3ev5eW06rxwahx</EncryptedPassword>
+    <_PublishTargetUrl>ftp://ftp-eu.site4now.net/benzeine</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="appsettings.Development.json">
+      <publishTime>11/26/2019 13:12:07</publishTime>
+    </File>
+    <File Include="appsettings.json">
+      <publishTime>11/26/2019 13:12:07</publishTime>
+    </File>
+    <File Include="web.config">
+      <publishTime>11/26/2019 14:13:19</publishTime>
+    </File>
+    <File Include="WebApplication_Benzeine.deps.json">
+      <publishTime>11/26/2019 14:13:19</publishTime>
+    </File>
+    <File Include="WebApplication_Benzeine.dll">
+      <publishTime>11/26/2019 14:13:19</publishTime>
+    </File>
+    <File Include="WebApplication_Benzeine.exe">
+      <publishTime>11/26/2019 14:13:19</publishTime>
+    </File>
+    <File Include="WebApplication_Benzeine.pdb">
+      <publishTime>11/26/2019 14:13:19</publishTime>
+    </File>
+    <File Include="WebApplication_Benzeine.runtimeconfig.json">
+      <publishTime>11/26/2019 13:55:14</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
