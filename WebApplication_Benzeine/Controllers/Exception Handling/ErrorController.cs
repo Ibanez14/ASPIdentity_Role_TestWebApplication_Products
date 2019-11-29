@@ -16,6 +16,7 @@ namespace WebApplication_Benzeine.Controller.Exception_Handling
     [ApiExplorerSettings(IgnoreApi = true)]
     public class ErrorController : ControllerBase
     {
+        [Route("")]
         [HttpGet]
         public ActionResult<JsonResult> Get()
         {

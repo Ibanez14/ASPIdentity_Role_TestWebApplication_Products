@@ -10,6 +10,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using WebApplication_Benzeine.Data.Models.Domain;
+using WebApplication_Benzeine.Helpers;
 using WebApplication_Benzeine.Models.ResponseDTO;
 using WebApplication_Benzeine.Options;
 
@@ -20,10 +22,10 @@ namespace WebApplication_Benzeine.Services
     /// </summary>
     public class AuthenticationService : IAuthenticationService
     {
-        UserManager<IdentityUser> userManager;
+        UserManager<ApplicationUser> userManager;
         JwtOptions jwtOptions;
 
-        public AuthenticationService(UserManager<IdentityUser> userManager,
+        public AuthenticationService(UserManager<ApplicationUser> userManager,
                                    IOptionsSnapshot<JwtOptions> jwtOptions)
         {
             this.userManager = userManager;
@@ -39,16 +41,15 @@ namespace WebApplication_Benzeine.Services
                 return AuthenticationResult.FailResult("Sorry, user already exists. Don't do that again");
 
             // if user doesnt exists, create a new user
-            var newUser = new IdentityUser() { Email = email, UserName = email };
+            var newUser = new ApplicationUser() { Email = email, UserName = email };
             var identityResult = await userManager.CreateAsync(newUser, password);
-
-            if (email.EndsWith("benzeine.com"))
-                await userManager.AddClaimAsync(newUser, new Claim(ClaimTypes.Role, "Developer"));
 
             if (!identityResult.Succeeded)
                 return AuthenticationResult.FailResult(identityResult.Errors.Select(e => e.Description));
-            else
+            
+                await userManager.AddToRoleAsync(newUser, "User");
                 return await GenerateAuthenticationResultAsync(newUser);
+            
         }
 
 
@@ -70,9 +71,9 @@ namespace WebApplication_Benzeine.Services
 
 
 
-        private async Task<AuthenticationResult> GenerateAuthenticationResultAsync(IdentityUser user)
+        private async Task<AuthenticationResult> GenerateAuthenticationResultAsync(ApplicationUser user)
         {
-            // return UserClaims with JwtClaims
+            // return UserClaims
             var claims = await GenerateJwtClaimsAsync(user);
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -89,21 +90,24 @@ namespace WebApplication_Benzeine.Services
             SecurityToken token = handler.CreateToken(tokenDescriptor);
             string jwt = handler.WriteToken(token);
 
-            return AuthenticationResult.SuccessResult(jwt);
+            return AuthenticationResult.SuccessResult(jwt, claims.ToDictionary());
 
             #region Local Method
 
             // Local method for generating JWTClaims
-            async Task<IEnumerable<Claim>> GenerateJwtClaimsAsync(IdentityUser user)
+            async Task<IEnumerable<Claim>> GenerateJwtClaimsAsync(ApplicationUser _user)
             {
+                var userRoles = await userManager.GetRolesAsync(_user);
+                var role = userRoles.FirstOrDefault();
+
                 var jwtClaims = new List<Claim>
-            {
-                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("Id", user.Id)
-            };
-                var userClaims = await userManager.GetClaimsAsync(user);
-                // Return JWT and User Claims in one collection
-                return jwtClaims.Concat(userClaims);
+                {
+                    new Claim("Email", _user.Email),
+                    new Claim("UserID", _user.Id),
+                    new Claim("Role", role)
+                };
+
+                return jwtClaims;
             }
             #endregion
         }

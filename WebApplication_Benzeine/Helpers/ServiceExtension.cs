@@ -2,8 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,41 +12,42 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApplication_Benzeine.Models.RequestDTO;
 using WebApplication_Benzeine.Options;
-using WebApplication_Benzeine.Swagger_Example_model_Providers;
 
 namespace WebApplication_Benzeine.Helpers
 {
     public static class ServiceExtension
     {
+        /// <summary>
+        /// Extension method for configure JWT Authentication
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
         public static void AddJwtBearer(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>();
             var tokenValidParameters = CreateTokenParameters(jwtOptions);
 
             services.AddAuthentication
-                    (ops =>
+                        (ops =>
                         {
                             ops.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                             ops.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                             ops.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                         })
-                    .AddJwtBearer(ops =>
+                        .AddJwtBearer(ops =>
                         {
                             ops.TokenValidationParameters = tokenValidParameters;
                             ops.SaveToken = true;
                         });
 
-            // Add tokenParameters to singleton so that to use these paramters
-            // in AuthenticationService when creating JWT
+            // Add tokenParameters to singleton so that to use in AuthenticationService when creating JWT
             // DRY principle baby
-
             services.AddSingleton<TokenValidationParameters>(tokenValidParameters);
 
             #region Local Method
 
-            TokenValidationParameters CreateTokenParameters(JwtOptions options)
-            {
-                return new TokenValidationParameters()
+            TokenValidationParameters CreateTokenParameters(JwtOptions options)=>
+                new TokenValidationParameters()
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(options.Secret)),
@@ -56,11 +56,15 @@ namespace WebApplication_Benzeine.Helpers
                     ValidateLifetime = true,
                     RequireExpirationTime = true
                 };
-            }
+            
             #endregion
         }
 
 
+        /// <summary>
+        /// Extension method to to Swagger
+        /// </summary>
+        /// <param name="services"></param>
         public static void ConfigureSwagger(this IServiceCollection services)
         {
             var assemblyName = string.Concat(Assembly.GetExecutingAssembly().GetName().Name, ".xml");
@@ -68,54 +72,45 @@ namespace WebApplication_Benzeine.Helpers
 
             services.AddSwaggerGen(ops =>
             {
-                ops.SwaggerDoc("v1", new OpenApiInfo()
+                ops.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info()
                 {
-                    Title = "Benzeine. Simple API service for testing Angular",
+                    Title = "Simple API service for testing Angular",
                     Version = "v1",
-                    Description = $"",
+                    Description = $"API Service based on JWT authentication" +
+                                  $"{Environment.NewLine}" +
+                                  $"Where registered user can GET, ADD or DELETE products" +
+                                  $"{Environment.NewLine}" +
+                                  $"{Environment.NewLine}" +
+                                  $"There is two roles: <b> User, Admin </b>" +
+                                  $"{Environment.NewLine}" +
+                                  $"{Environment.NewLine}" +
+                                  $"<b>User</b>  => Can GET and ADD products, also may DELETE products that has been created by this User" +
+                                  $"{Environment.NewLine}" +
+                                  $"<b>Admin</b> => Can do the same, BUT may also delete all products no matter which user added it"
                 });
 
-
-
-                ops.ExampleFilters();
                 ops.IncludeXmlComments(pathToAssembly);
 
-                var securitySchema = new OpenApiSecurityScheme
+                #region Swagger Authorization Configuration
+
+                var securitySchema = new ApiKeyScheme()
                 {
                     Description = "Please insert JWT with Bearer into field",
                     Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey
-                    ,
-                    Scheme = "bearer",
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-
+                    In = "header",
+                    Type = "apiKey"
                 };
+
                 ops.AddSecurityDefinition("Bearer", securitySchema);
 
+                var securityDictionary = new Dictionary<string, IEnumerable<string>>
+                {
+                    {"Bearer", Array.Empty<string>()}
+                };
+                ops.AddSecurityRequirement(securityDictionary);
 
-                var securityRequirement = new OpenApiSecurityRequirement();
-                securityRequirement.Add(securitySchema, new[] { "Bearer" });
-                ops.AddSecurityRequirement(securityRequirement);
-
-
-
-
-                ops.OperationFilter<SecurityRequirementsOperationFilter>();
-
+                #endregion
             });
-
-            services.AddSwaggerExamplesFromAssemblyOf<Startup>();
-
         }
-
-
-
-        #region Private Methods
-        #endregion
     }
 }

@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebApplication_Benzeine</name>
+    </assembly>
+    <members>
+        <member name="M:WebApplication_Benzeine.Controller.IdentityController.Register(WebApplication_Benzeine.Models.RequestDTO.RequestModel)">
+            <summary>
+            Receive requestModel and if succeessfully registered then returns a JWT Token, otherwise Error list. 
+            </summary>
+            <param name="request">Request model parameter</param>
+            <response code="200">Success. Registration succeeded. This status returns JWT token </response>
+            <response code="400">Bad Request. Registration failed. This status may be returned in case there is already exist such a user, or requestModel wasn't valid</response>
+        </member>
+        <member name="M:WebApplication_Benzeine.Controller.IdentityController.Login(WebApplication_Benzeine.Models.RequestDTO.RequestModel)">
+            <summary>
+            Receive requestModel and if succeessfully logged in then returns a JWT Token, otherwise Error list. 
+            </summary>
+            <param name="request">Request model parameter</param>
+            <response code="200">Success. Login succeeded. This status returns JWT token </response>
+            <response code="400">Bad Request. Registration failed. This status may be returned Error-related information</response>
+        </member>
+        <member name="T:WebApplication_Benzeine.Controller.Exception_Handling.ErrorController">
+            <summary>
+            Simple controller for handling Expcetions and punish them
+            </summary>
+        </member>
+        <member name="M:WebApplication_Benzeine.Controller.ProductController.GetAllProducts">
+            <summary>
+             Return all products created by users
+            </summary>
+            <returns>List of product</returns>
+            <response code="200">Success. Return a List of product</response>
+            <response code="404">Not Found. Returns nothing if there is no products</response>
+        </member>
+        <member name="M:WebApplication_Benzeine.Controller.ProductController.GetUserProducts">
+            <summary>
+             Return only user-created products 
+            </summary>
+            <returns>List of product</returns>
+            <response code="200">Success. Return a List of product</response>
+            <response code="404">Not Found. Returns nothing if there is no products</response>
+        </member>
+        <member name="M:WebApplication_Benzeine.Controller.ProductController.GetCategories">
+            <summary>
+             Return all categories related with products
+            </summary>
+            <returns>List of categories</returns>
+            <response code="200">Success. Return a List of category</response>
+            <response code="404">Not Found. Returns nothing if there is no category</response>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:WebApplication_Benzeine.Controller.ProductController.GetCatogoryByID(System.Int32)" -->
+        <member name="M:WebApplication_Benzeine.Controller.ProductController.AddProduct(WebApplication_Benzeine.Data.Models.DTO_s.ProductDTO)">
+            <summary>
+             Add product to the database
+            </summary>
+            <returns>Category</returns>
+            <response code="200">Success. Product added</response>
+            <response code="400">Bad Request. Product model wasn't valid</response>
+        </member>
+        <member name="M:WebApplication_Benzeine.Controller.ProductController.DeleteProduct(System.Int32)">
+            <summary>
+            And Remember! Only User created this product can delete it, otherwise user will be denied. DEMOCRATIC !
+            </summary>
+            <param name="id">ID parameter</param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApplication_Benzeine.Models.RequestDTO.RequestModel">
+            <summary>
+            REquest Model
+            </summary>
+        </member>
+        <member name="P:WebApplication_Benzeine.Models.RequestDTO.RequestModel.Email">
+            <summary>
+            Email Address should be in correct way.
+            benzeine.com domains can have access  api/wifi URL that return wifi password
+            </summary>
+        </member>
+        <member name="T:WebApplication_Benzeine.Services.AuthenticationService">
+            <summary>
+            Service is responsible for authentication users and generate JWT Tokens
+            </summary>
+        </member>
+        <member name="T:WebApplication_Benzeine.Services.ProductService">
+            <summary>
+            Service that represent CRUD operations over Product and Category entites.
+            I didn't separated services into ProductService and CategoryService, and didn't use RepositoryPattern
+            All implemented together in one service.
+            DTO not used
+            </summary>
+        </member>
+        <member name="M:WebApplication_Benzeine.Services.ProductService.AddProduct(WebApplication_Benzeine.Data.Models.DTO_s.ProductDTO)">
+            <summary>
+            Add a new Product.
+            No need for validation since it will be validated in Controller
+            </summary>
+            <param name="product"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApplication_Benzeine.Services.ProductService.DeleteProduct(System.Int32)">
+            <summary>
+            Delete Product
+            </summary>
+            <param name="productId"></param>
+            <returns>Boolean indicating if product were succeffully deleted</returns>
+        </member>
+    </members>
+</doc>
