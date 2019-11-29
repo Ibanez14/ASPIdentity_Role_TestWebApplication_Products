@@ -117,12 +117,13 @@ namespace WebApplication_Benzeine.Services
         {
             var product = await dataContext.Set<Product>().FindAsync(productId);
 
+
             if (product != null)
             {
                 // Check whether user is the same that created the product || if user is Admin
                 if (product.UserId == accessor.HttpContext.User.FindFirst("UserID").Value
                     ||
-                    accessor.HttpContext.User.IsInRole("Admin"))
+                    accessor.HttpContext.User.FindFirst("Role").Value == "Admin")
                 {
                     dataContext.Entry(product).State = EntityState.Deleted;
                     await dataContext.SaveChangesAsync();

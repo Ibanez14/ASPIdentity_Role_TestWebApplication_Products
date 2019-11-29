@@ -33,12 +33,11 @@ namespace WebApplication_Benzeine.Controller
         /// <response code="200">Success. Return a List of product</response>
         /// <response code="404">Not Found. Returns nothing if there is no products</response>
         [HttpGet]
-        [ProducesResponseType(404)]
         [ProducesResponseType(200)]
         public async Task<ActionResult<List<ProductResponseModel>>> GetAllProducts()
         {
             var products = await productService.GetAllProducts();
-
+            
             if (products == null)
                 return NotFound();
 
@@ -53,7 +52,6 @@ namespace WebApplication_Benzeine.Controller
         /// <response code="200">Success. Return a List of product</response>
         /// <response code="404">Not Found. Returns nothing if there is no products</response>
         [HttpGet]
-        [ProducesResponseType(404)]
         [ProducesResponseType(200)]
         public async Task<ActionResult<List<ProductResponseModel>>> GetUserProducts()
         {
@@ -72,7 +70,6 @@ namespace WebApplication_Benzeine.Controller
         /// <response code="200">Success. Return a List of category</response>
         /// <response code="404">Not Found. Returns nothing if there is no category</response>
         [HttpGet]
-        [ProducesResponseType(404)]
         [ProducesResponseType(200)]
         public async Task<ActionResult<List<Category>>> GetCategories()
         {
