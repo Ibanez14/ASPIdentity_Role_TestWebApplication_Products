@@ -14,10 +14,10 @@ namespace WebApplication_Benzeine.Data
 
         // Navigation properties
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
 
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public int UserId { get; set; }
+        public virtual AppUser User { get; set; }
     }
 }

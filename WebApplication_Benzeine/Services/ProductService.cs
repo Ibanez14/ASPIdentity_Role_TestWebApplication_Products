@@ -20,7 +20,7 @@ namespace WebApplication_Benzeine.Services
     /// </summary>
     public class ProductService : IProductService
     {
-        DataContext dataContext;
+        Data.DataContext dataContext;
 
         /// <summary>
         /// HttpAccessor to get information about User from
@@ -28,7 +28,7 @@ namespace WebApplication_Benzeine.Services
         private readonly IHttpContextAccessor accessor;
 
         // Lambda constructor
-        public ProductService(DataContext dataContext, IHttpContextAccessor accessor) =>
+        public ProductService(Data.DataContext dataContext, IHttpContextAccessor accessor) =>
                 (this.dataContext, this.accessor) = (dataContext, accessor);
         
 
@@ -52,7 +52,7 @@ namespace WebApplication_Benzeine.Services
         /// <returns></returns>
         public async Task<List<ProductResponseModel>> GetUserProducts() =>
                 (await dataContext.Set<Product>()
-                                 .Where(p => p.UserId == accessor.HttpContext.User.FindFirst("UserID").Value)
+                                 .Where(p => p.UserId.ToString() == accessor.HttpContext.User.FindFirst("UserID").Value)
                                  .Include(p => p.Category)
                                  .Include(p=>p.User)
                                  .ToListAsync())
@@ -98,7 +98,7 @@ namespace WebApplication_Benzeine.Services
 
             // Add Product
             product.CategoryId = category.Id;
-            product.UserId = accessor.HttpContext.User.FindFirst("UserID").Value;
+            product.UserId = int.Parse(accessor.HttpContext.User.FindFirst("UserID").Value);
             dataContext.Set<Product>().Add(product);
             await dataContext.SaveChangesAsync();
 
@@ -121,7 +121,7 @@ namespace WebApplication_Benzeine.Services
             if (product != null)
             {
                 // Check whether user is the same that created the product || if user is Admin
-                if (product.UserId == accessor.HttpContext.User.FindFirst("UserID").Value
+                if (product.UserId.ToString() == accessor.HttpContext.User.FindFirst("UserID").Value
                     ||
                     accessor.HttpContext.User.FindFirst("Role").Value == "Admin")
                 {

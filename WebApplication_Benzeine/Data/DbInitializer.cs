@@ -12,26 +12,26 @@ namespace WebApplication_Benzeine.Data
     {
         public static async Task SeedData(IServiceProvider serviceProvider)
         {
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<AppRole>>();
 
             #region Seed Roles
 
             if (!await roleManager.RoleExistsAsync("Admin"))
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
+                await roleManager.CreateAsync(new AppRole("Admin"));
 
             if (!await roleManager.RoleExistsAsync("User"))
-                await roleManager.CreateAsync(new IdentityRole("User"));
+                await roleManager.CreateAsync(new AppRole("User"));
 
             #endregion
 
             #region Seed User Admin 
 
-            var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+            var userManager = serviceProvider.GetService<UserManager<AppUser>>();
             var admin = (await userManager.GetUsersInRoleAsync("Admin")).FirstOrDefault();
 
             if (admin == null)
             {
-                admin = new ApplicationUser() { UserName = "admin@admin.com", Email = "admin@admin.com" };
+                admin = new AppUser() { UserName = "admin@admin.com", Email = "admin@admin.com" };
 
                 if (!(await userManager.CreateAsync(admin)).Succeeded)
                     throw new Exception("Could create Admin user");

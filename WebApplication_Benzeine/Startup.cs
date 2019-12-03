@@ -16,6 +16,8 @@ using WebApplication_Benzeine.Helpers;
 using WebApplication_Benzeine.Options;
 using WebApplication_Benzeine.Services;
 using WebApplication_Benzeine.Data.Models.Domain;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Text.Encodings.Web;
 
 namespace WebApplication_Benzeine
 {
@@ -29,20 +31,36 @@ namespace WebApplication_Benzeine
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.Configure<IdentityOptions>(ops =>
+            {
+                ops.Password.RequireDigit = true;
+                ops.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                ops.Lockout.MaxFailedAccessAttempts = 5;
+                ops.User.RequireUniqueEmail = true;
+            });
+
+           
+
+
+
             services.AddCors();
             services.AddHttpContextAccessor();
 
             services.AddJwtBearer(Configuration);
             services.ConfigureSwagger();
 
-            services.AddIdentity<ApplicationUser,IdentityRole>()
-                    .AddEntityFrameworkStores<DataContext>();
+            services.AddIdentity<AppUser, AppRole>()
+                    .AddEntityFrameworkStores<Data.DataContext>();
 
-            services.AddDbContext<DataContext>(ops => ops.UseSqlServer(GetConnectionString()));
+            services.AddDbContext<Data.DataContext>(ops => ops.UseSqlServer(GetConnectionString())
+                                                             .UseLazyLoadingProxies());
 
-            // Services
+            HtmlEncoder.Default.Encode("String");
+
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IEmailSender, EmailSender>();
 
             // Options
             services.Configure<JwtOptions>(Configuration.GetSection("JwtOptions"));
@@ -60,6 +78,8 @@ namespace WebApplication_Benzeine
                 app.UseExceptionHandler("/Error");
 
             app.UseAuthentication();
+            
+
             app.UseSwagger();
             app.UseSwaggerUI(ops =>
             {

@@ -35,7 +35,8 @@ namespace WebApplication_Benzeine.Controller
         public async Task<ActionResult<AuthenticationResult>> Register([FromBody] RequestModel request)
         {
             var authResult = await authService.RegisterAsync(request.Email, request.Password);
-
+            
+            
             if (!authResult.Success)
                 return BadRequest(authResult);
             else
